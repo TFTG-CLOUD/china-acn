@@ -4,6 +4,68 @@ const passport = require('passport');
 const { generateAuthResponse } = require('../utils/auth.utils');
 const { asyncHandler } = require('../middlewares/error.middleware');
 const router = express.Router();
+const userService = require('../services/auth.service');
+const { validateRequest } = require('../middlewares/validation.middleware');
+const { authenticateJWT } = require('../middlewares/auth.middleware');
+const {
+  registerSchema,
+  loginSchema,
+  changePasswordSchema,
+  resetPasswordSchema
+} = require('../schemas/user.schema');
+
+// 注册
+router.post('/register',
+  validateRequest(registerSchema),
+  asyncHandler(async (req, res) => {
+    const result = await userService.register(req.body);
+    res.status(201).json(result);
+  })
+);
+
+// 登录
+router.post('/login',
+  validateRequest(loginSchema),
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    const result = await userService.login(email, password);
+    res.json(result);
+  })
+);
+
+// 修改密码
+router.post('/change-password',
+  authenticateJWT,
+  validateRequest(changePasswordSchema),
+  asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const result = await userService.changePassword(
+      req.user._id,
+      currentPassword,
+      newPassword
+    );
+    res.json(result);
+  })
+);
+
+// 请求重置密码
+router.post('/forgot-password',
+  asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const result = await userService.requestPasswordReset(email);
+    res.json(result);
+  })
+);
+
+// 重置密码
+router.post('/reset-password',
+  validateRequest(resetPasswordSchema),
+  asyncHandler(async (req, res) => {
+    const { token, newPassword } = req.body;
+    const result = await userService.resetPassword(token, newPassword);
+    res.json(result);
+  })
+);
 
 // Google登录初始化
 router.get('/google',
@@ -27,7 +89,7 @@ router.get('/google/callback',
 
 // 获取当前用户信息
 router.get('/me',
-  passport.authenticate('jwt', { session: false }),
+  authenticateJWT,
   asyncHandler(async (req, res) => {
     res.json({
       user: {

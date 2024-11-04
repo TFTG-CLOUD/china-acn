@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
+  useranme: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   password: {
     type: String,
     required: true
@@ -23,7 +28,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user'
-  }
+  },
+  resetToken: String,
+  resetTokenExpiry: Date,
+  verificationToken: String,
+  verificationTokenExpiry: Date
 }, {
   timestamps: true
 });

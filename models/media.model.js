@@ -22,12 +22,20 @@ const mediaSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Tag'
   }],
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'hidden'],
+    default: 'pending'
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   assets: [{
-    type: {
-      type: String,
-      enum: ['IMAGE', 'VIDEO']
-    },
-    url: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Asset',
+    required: true
   }]
 }, {
   timestamps: true

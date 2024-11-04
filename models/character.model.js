@@ -10,6 +10,11 @@ const characterSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Tag'
   }],
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   avatarUrl: String,
   mediaRefs: [{
     type: mongoose.Schema.Types.ObjectId,

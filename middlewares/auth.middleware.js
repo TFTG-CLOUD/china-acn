@@ -26,7 +26,7 @@ const authenticateJWT = passport.authenticate('jwt', { session: false });
 // 检查是否是管理员
 const isAdmin = async (req, res, next) => {
   try {
-    if (!req.user || !req.user.isAdmin()) {
+    if (!req.user || !req.user.role !== 'admin') {
       throw new APIError(403, 'Admin access required');
     }
     next();

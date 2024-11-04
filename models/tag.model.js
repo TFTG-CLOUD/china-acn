@@ -4,6 +4,7 @@ const tagSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['GENRE', 'THEME', 'CHARACTER_TRAIT', 'CONTENT_WARNING', 'CUSTOM'],
+    default: 'GENRE',
     required: true
   },
   slug: {
